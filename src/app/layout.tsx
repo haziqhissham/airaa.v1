@@ -10,6 +10,13 @@ const inter = Inter({
   display: "swap",
 });
 
+/**
+ * Run server functions in Sydney (syd1), co-located with the Supabase database
+ * (ap-southeast-2). Avoids ~200ms US↔AU round-trips per query. Applies to all
+ * routes under the root layout.
+ */
+export const preferredRegion = "syd1";
+
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
