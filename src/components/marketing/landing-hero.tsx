@@ -38,7 +38,7 @@ const steps = [
   {
     icon: Compass,
     title: "Assess",
-    text: "Answer ten short sections spanning leadership, technology, people, data, security, ethics and more.",
+    text: "Answer 45 questions across AI knowledge, readiness and real workplace scenarios — about 10–15 minutes.",
   },
   {
     icon: LineChart,

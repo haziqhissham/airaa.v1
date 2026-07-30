@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import {
   matchRecommendations,
+  matchesConditions,
+  recommendProgrammes,
   type ModuleLite,
   type Profile,
   type Rule,
@@ -63,5 +65,81 @@ describe("matchRecommendations", () => {
 
   it("falls back to catalogue when no rule matches", () => {
     expect(matchRecommendations([], modules, profile(50, "DEVELOPING"))).toHaveLength(3);
+  });
+});
+
+describe("matchesConditions (role-aware)", () => {
+  const base: Profile = { name: "Ada", overall: 65, categoryScores: {} };
+
+  it("matches job grade case-insensitively by contains", () => {
+    const c = { jobGrades: ["Senior Manager", "Director", "Head", "C-Level"] };
+    expect(matchesConditions(c, { ...base, jobGrade: "Senior Manager" })).toBe(true);
+    expect(matchesConditions(c, { ...base, jobGrade: "Head of Finance" })).toBe(true);
+    expect(matchesConditions(c, { ...base, jobGrade: "Executive Director" })).toBe(true);
+    expect(matchesConditions(c, { ...base, jobGrade: "Executive" })).toBe(false);
+    expect(matchesConditions(c, { ...base })).toBe(false);
+  });
+
+  it("matches job function by exact (case-insensitive) equality", () => {
+    const c = { jobFunctions: ["SALES", "MARKETING"] };
+    expect(matchesConditions(c, { ...base, jobFunction: "sales" })).toBe(true);
+    expect(matchesConditions(c, { ...base, jobFunction: "FINANCE" })).toBe(false);
+  });
+
+  it("matches department by keyword contains", () => {
+    const c = { departmentKeywords: ["Leasing", "Business Development", "Corporate Communication"] };
+    expect(matchesConditions(c, { ...base, department: "Retail Leasing" })).toBe(true);
+    expect(matchesConditions(c, { ...base, department: "Corporate Communication" })).toBe(true);
+    expect(matchesConditions(c, { ...base, department: "Finance" })).toBe(false);
+  });
+
+  it("gates on the workplace (Category C) score", () => {
+    const c = { minWorkplaceScore: 70 };
+    expect(matchesConditions(c, { ...base, workplaceScore: 72 })).toBe(true);
+    expect(matchesConditions(c, { ...base, workplaceScore: 68 })).toBe(false);
+    expect(matchesConditions(c, { ...base })).toBe(false); // missing → treated as 0
+  });
+
+  it("requires ALL present dimensions to pass (AND across dimensions)", () => {
+    const c = { jobFunctions: ["FINANCE"], minWorkplaceScore: 70, minScore: 60 };
+    expect(matchesConditions(c, { ...base, overall: 65, jobFunction: "FINANCE", workplaceScore: 75 })).toBe(true);
+    expect(matchesConditions(c, { ...base, overall: 65, jobFunction: "FINANCE", workplaceScore: 60 })).toBe(false);
+    expect(matchesConditions(c, { ...base, overall: 50, jobFunction: "FINANCE", workplaceScore: 75 })).toBe(false);
+  });
+});
+
+describe("recommendProgrammes (primary + conditional secondary)", () => {
+  const catalogue: ModuleLite[] = [
+    { id: "lead", title: "AI Executive Leadership", level: "ADVANCED", skills: [] },
+    { id: "data", title: "AI Data Analytics", level: "INTERMEDIATE", skills: [] },
+    { id: "office", title: "AI for Office Management", level: "FOUNDATION", skills: [] },
+  ];
+  const rules: Rule[] = [
+    { id: "r1", label: "exec", priority: 10, conditions: { jobGrades: ["Director"], minScore: 60 }, moduleIds: ["lead"], reasonTemplate: "{module}", stopOnMatch: false },
+    { id: "r2", label: "data", priority: 20, conditions: { jobFunctions: ["FINANCE"], minWorkplaceScore: 70 }, moduleIds: ["data"], reasonTemplate: "{module}", stopOnMatch: false },
+    { id: "r4", label: "catch-all", priority: 99, conditions: {}, moduleIds: ["office"], reasonTemplate: "{module}", stopOnMatch: false },
+  ];
+
+  it("returns a primary and no secondary below the floor", () => {
+    const p: Profile = { name: "Ada", overall: 66, categoryScores: {}, jobGrade: "Director", jobFunction: "FINANCE", workplaceScore: 75 };
+    const out = recommendProgrammes(rules, catalogue, p);
+    expect(out.primary?.moduleId).toBe("lead");
+    expect(out.primary?.kind).toBe("PRIMARY");
+    expect(out.secondary).toBeUndefined();
+  });
+
+  it("generates a secondary when overall >= 80", () => {
+    const p: Profile = { name: "Ada", overall: 85, categoryScores: {}, jobGrade: "Director", jobFunction: "FINANCE", workplaceScore: 75 };
+    const out = recommendProgrammes(rules, catalogue, p);
+    expect(out.primary?.moduleId).toBe("lead");
+    expect(out.secondary?.moduleId).toBe("data");
+    expect(out.secondary?.kind).toBe("SECONDARY");
+  });
+
+  it("routes non-matching roles to the catch-all office programme", () => {
+    const p: Profile = { name: "Ada", overall: 45, categoryScores: {}, jobGrade: "Executive", jobFunction: "HR", workplaceScore: 40 };
+    const out = recommendProgrammes(rules, catalogue, p);
+    expect(out.primary?.moduleId).toBe("office");
+    expect(out.secondary).toBeUndefined();
   });
 });

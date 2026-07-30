@@ -57,13 +57,19 @@ export function ResultView({ view, orgName }: { view: RV; orgName: string }) {
       <GlassCard className="flex flex-col items-center gap-6 p-8 sm:flex-row">
         <ScoreRing score={view.overallScore} accent={view.tierColor} />
         <div className="flex-1 text-center sm:text-left">
-          <Badge variant="info" className="mb-2" style={{ backgroundColor: `${view.tierColor}22`, color: view.tierColor }}>
-            {view.tierLabel}
-          </Badge>
+          <div className="mb-2 flex flex-wrap justify-center gap-2 sm:justify-start">
+            <Badge variant="info" style={{ backgroundColor: `${view.tierColor}22`, color: view.tierColor }}>
+              {view.tierLabel}
+            </Badge>
+            <Badge variant="secondary" className="gap-1">
+              <BrainCircuit className="size-3" /> {view.personaLabel}
+            </Badge>
+          </div>
           <h1 className="text-2xl font-bold tracking-tight">Your AI Readiness Level</h1>
           {view.tierDescription && (
             <p className="mt-2 text-sm text-muted-foreground">{view.tierDescription}</p>
           )}
+          <p className="mt-1 text-sm text-muted-foreground">{view.personaDescription}</p>
         </div>
       </GlassCard>
 
@@ -126,7 +132,14 @@ export function ResultView({ view, orgName }: { view: RV; orgName: string }) {
                 <div className="flex items-start gap-3">
                   <div className="grid size-7 shrink-0 place-items-center rounded-full bg-brand-500/15 text-xs font-bold text-brand-700">{i + 1}</div>
                   <div>
-                    <p className="font-medium">{r.title}</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-medium">{r.title}</p>
+                      {r.kind && (
+                        <Badge variant={r.kind === "PRIMARY" ? "info" : "outline"} className="text-[10px] uppercase tracking-wide">
+                          {r.kind === "PRIMARY" ? "Primary" : "Secondary"}
+                        </Badge>
+                      )}
+                    </div>
                     <p className="mt-0.5 text-sm text-muted-foreground">{r.reason}</p>
                   </div>
                 </div>

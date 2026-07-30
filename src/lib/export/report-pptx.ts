@@ -29,7 +29,7 @@ export async function exportEmployeePptx(view: ResultView, orgName: string) {
   s.addText("Overall readiness", { x: 0.6, y: 0.4, fontSize: 24, bold: true, color: DARK });
   s.addText(`${Math.round(view.overallScore)}`, { x: 0.6, y: 1.6, w: 4, h: 2.5, fontSize: 96, bold: true, color: BRAND });
   s.addText("/ 100", { x: 4.3, y: 3.0, fontSize: 24, color: "64748B" });
-  s.addText(view.tierLabel, { x: 6, y: 2.2, fontSize: 32, bold: true, color: DARK });
+  s.addText(`${view.tierLabel} · ${view.personaLabel}`, { x: 6, y: 2.2, w: 6.5, fontSize: 28, bold: true, color: DARK });
   if (view.tierDescription) s.addText(view.tierDescription, { x: 6, y: 3.0, w: 6.5, fontSize: 14, color: "334155" });
 
   // Category scores

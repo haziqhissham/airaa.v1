@@ -21,10 +21,10 @@ export const FALLBACK_ORG: Organization = {
   code: process.env.NEXT_PUBLIC_DEFAULT_ORG_SLUG ?? "default",
   status: OrganizationStatus.ACTIVE,
   theme: {
-    primary: "#2563eb",
-    accent: "#3b82f6",
-    gradientFrom: "#1e3a8a",
-    gradientTo: "#3b82f6",
+    primary: "#00b6b5",
+    accent: "#33c5c4",
+    gradientFrom: "#005352",
+    gradientTo: "#00b6b5",
   },
 };
 

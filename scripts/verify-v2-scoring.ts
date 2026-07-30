@@ -10,6 +10,7 @@ import type {
   CategoryWithQuestions,
   ReadinessTierConfig,
 } from "@/domain/v2/types";
+import { READINESS_BANDS } from "@/domain/v2/readiness";
 
 const likertOpts = [1, 2, 3, 4, 5].map((n) => ({ label: String(n), value: String(n), score: n }));
 
@@ -32,15 +33,16 @@ function cat(id: string, name: string, weight: number): CategoryWithQuestions {
 
 const sections = [cat("lead", "Leadership", 0.5), cat("data", "Data", 0.3), cat("ethics", "Ethics", 0.2)];
 
-const levels: ReadinessTierConfig[] = [
-  { id: "l1", tier: "BEGINNER", label: "Beginner", minScore: 0, maxScore: 20, color: "#94a3b8" },
-  { id: "l2", tier: "EMERGING", label: "Emerging", minScore: 21, maxScore: 40, color: "#60a5fa" },
-  { id: "l3", tier: "DEVELOPING", label: "Developing", minScore: 41, maxScore: 60, color: "#3b82f6" },
-  { id: "l4", tier: "ADVANCED", label: "Advanced", minScore: 61, maxScore: 80, color: "#2563eb" },
-  { id: "l5", tier: "AI_READY", label: "AI Ready", minScore: 81, maxScore: 100, color: "#1d4ed8" },
-];
+const levels: ReadinessTierConfig[] = READINESS_BANDS.map((b, i) => ({
+  id: `l${i + 1}`,
+  tier: b.tier,
+  label: b.label,
+  minScore: b.min,
+  maxScore: b.max,
+  color: b.color,
+}));
 
-// Likert normalization sanity: 1→0, 3→50, 5→100
+// Likert normalization sanity (AIRA spec, n/5): 1→20, 3→60, 5→100
 console.log(
   "Likert 1/3/5 →",
   [1, 3, 5].map((n) => scoreQuestion(sections[0]!.questions[0]!, n).score),

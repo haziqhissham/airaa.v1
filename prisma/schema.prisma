@@ -34,9 +34,8 @@ enum OrgStatus {
 enum ReadinessTier {
   BEGINNER
   EMERGING
-  DEVELOPING
-  ADVANCED
   AI_READY
+  AI_ADVANCED
 }
 
 enum QuestionType {

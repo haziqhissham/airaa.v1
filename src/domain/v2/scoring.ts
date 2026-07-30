@@ -30,11 +30,19 @@ export function scoreQuestion(
   if (q.type === "OPEN_TEXT" || isEmpty(answer)) return { score: 0, scored: false };
 
   if (q.type === "LIKERT") {
-    // Answer is the option value (1..5) or a number.
+    // Answer is the scale position (1..5) chosen by the user. We look up the
+    // matching option to honour its `score`, which lets reverse-scored items be
+    // encoded purely in data (value "5" → score 1, …). Per the AIRA spec the
+    // readiness score is the proportion of the scale (userScore / 75), so a
+    // per-question value maps score → score/5 (1→20, 3→60, 5→100). Averaging
+    // these across a category reproduces (Σ value / (5·count)) × 100.
     const n = typeof answer === "number" ? answer : Number(answer);
     if (Number.isNaN(n)) return { score: 0, scored: false };
-    const normalized = (clamp(n, 1, 5) - 1) / 4; // 1→0, 5→1
-    return { score: round1(normalized * 100), scored: true };
+    const pos = clamp(n, 1, 5);
+    const opt = q.options.find((o) => o.value === String(pos));
+    const maxOpt = Math.max(1, ...q.options.map((o) => o.score));
+    const raw = opt ? opt.score : pos;
+    return { score: round1(clamp((raw / maxOpt) * 100)), scored: true };
   }
 
   if (q.type === "MULTIPLE_CHOICE") {
