@@ -78,7 +78,7 @@ export function LandingHero({ orgName, logoUrl, theme }: LandingHeroProps) {
           ) : (
             <div
               className="grid size-9 place-items-center rounded-xl text-white shadow-lg"
-              style={brandStyle ?? { background: "#2563eb" }}
+              style={brandStyle ?? { background: "#00b6b5" }}
             >
               <BrainCircuit className="size-5" />
             </div>
@@ -126,7 +126,7 @@ export function LandingHero({ orgName, logoUrl, theme }: LandingHeroProps) {
             >
               A guided assessment for {orgName} employees. Understand
               where you stand with AI today and get a personalised training
-              path to grow — no right or wrong answers, just insight.
+              path matched to your role and readiness.
             </motion.p>
 
             <motion.div
