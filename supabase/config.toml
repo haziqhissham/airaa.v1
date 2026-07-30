@@ -1,0 +1,46 @@
+# Supabase local development config (supabase CLI).
+# Run: supabase start  → local Postgres + Auth + Storage on the ports below.
+
+project_id = "ai-readiness-v2"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+
+# OAuth providers (fill secrets via env when enabling)
+[auth.external.google]
+enabled = false
+client_id = "env(GOOGLE_OAUTH_CLIENT_ID)"
+secret = "env(GOOGLE_OAUTH_SECRET)"
+
+[auth.external.azure]
+enabled = false
+client_id = "env(AZURE_OAUTH_CLIENT_ID)"
+secret = "env(AZURE_OAUTH_SECRET)"
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
