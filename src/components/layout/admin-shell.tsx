@@ -14,6 +14,7 @@ import {
 import { ThemeToggle } from "@/components/providers/theme-toggle";
 import { LogoutButton } from "@/components/layout/logout-button";
 import { Badge } from "@/components/ui/badge";
+import { navForRole } from "@/config/nav";
 import { cn, initials } from "@/lib/utils";
 import type { UserRole } from "@/domain/enums";
 
@@ -98,6 +99,23 @@ export function AdminShell({
                 </Link>
               );
             })}
+
+            <div className="mt-4 border-t pt-4">
+              <p className="mb-1 px-3 text-xs font-medium text-muted-foreground">
+                Go to
+              </p>
+              {navForRole(role)
+                .filter((i) => i.href !== "/admin")
+                .map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                  >
+                    {item.title}
+                  </Link>
+                ))}
+            </div>
           </nav>
         </aside>
 

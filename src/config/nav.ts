@@ -4,19 +4,19 @@ import type { UserRole as Role } from "@/domain/enums";
 export interface NavItem {
   title: string;
   href: string;
-  icon: string; // lucide icon name
   roles: Role[];
 }
 
 const ALL_ROLES: Role[] = Object.values(UserRole);
 
-/** Role-aware primary navigation. Rendered by the app shell. */
+/** Role-aware primary navigation. Rendered by the app header. */
 export const navItems: NavItem[] = [
-  { title: "Home", href: "/dashboard", icon: "LayoutDashboard", roles: ALL_ROLES },
-  { title: "Assessment", href: "/assessment", icon: "ClipboardList", roles: ALL_ROLES },
-  { title: "My Result", href: "/result", icon: "Sparkles", roles: ALL_ROLES },
-  { title: "HR Dashboard", href: "/hr", icon: "BarChart3", roles: HR_ROLES },
-  { title: "Admin", href: "/admin", icon: "Settings", roles: ORG_MANAGER_ROLES },
+  { title: "Home", href: "/dashboard", roles: ALL_ROLES },
+  { title: "Assessment", href: "/assessment", roles: ALL_ROLES },
+  { title: "My Result", href: "/result", roles: ALL_ROLES },
+  { title: "HR", href: "/hr", roles: HR_ROLES },
+  { title: "Admin", href: "/admin", roles: ORG_MANAGER_ROLES },
+  { title: "Super", href: "/super", roles: [UserRole.SUPER_ADMIN] },
 ];
 
 export function navForRole(role: Role): NavItem[] {

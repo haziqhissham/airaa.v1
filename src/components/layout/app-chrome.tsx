@@ -5,6 +5,7 @@ import { LogoutButton } from "@/components/layout/logout-button";
 import { Badge } from "@/components/ui/badge";
 import { initials } from "@/lib/utils";
 import { ROLE_LABEL } from "@/lib/auth/roles";
+import { navForRole } from "@/config/nav";
 import type { UserRole } from "@/domain/enums";
 
 interface AppChromeProps {
@@ -44,6 +45,19 @@ export function AppChrome({ orgName, displayName, role, children }: AppChromePro
             <LogoutButton />
           </div>
         </div>
+
+        {/* Role-aware primary navigation */}
+        <nav className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 pb-2 sm:px-6">
+          {navForRole(role).map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            >
+              {item.title}
+            </Link>
+          ))}
+        </nav>
       </header>
 
       <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
