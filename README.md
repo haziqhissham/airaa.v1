@@ -1,69 +1,84 @@
-# MDEC AI Readiness Assessment Platform
+# AI Readiness Assessment Platform
 
-Measures employee **AI readiness** and recommends the most suitable **MDEC AI training
-programme**. First client implementation: **Johor Land Berhad (JLG)**. Multi-tenant by design
-(`clientCode`).
+[![CI](https://github.com/haziqhissham/airaa.v1/actions/workflows/ci.yml/badge.svg)](https://github.com/haziqhissham/airaa.v1/actions/workflows/ci.yml)
 
-> This is a diagnostic and advisory tool — **not** an AI quiz. There are no right or wrong
-> answers; every question maps to a readiness dimension.
+A production-ready, **multi-tenant** platform that measures organizational AI readiness across
+ten dimensions and recommends targeted training. Employees complete a weighted assessment;
+HR and admins get org-wide analytics and AI-generated reports.
+
+> A diagnostic and advisory tool — not a quiz. Every question maps to a readiness category.
 
 ## Tech stack
 
-Next.js 15 (App Router · RSC · Server Actions) · TypeScript (strict) · Tailwind CSS + shadcn/ui ·
-Framer Motion · Recharts · Firebase (Auth / Firestore / Storage / Cloud Functions) · Vercel.
-Future: Claude API for narrative report generation.
+Next.js 15 (App Router · RSC · Server Actions) · React 19 · TypeScript (strict) ·
+**Supabase** (Auth · PostgreSQL · Storage · Row Level Security) · **Prisma** · TanStack Query ·
+Tailwind CSS + shadcn/ui · Framer Motion · Recharts · **OpenAI / Claude / Gemini** ·
+deployed on **Vercel**.
+
+## Features
+
+- **Auth** — email/password, Google & Azure OAuth, magic link, password reset; **6 roles**
+  (Super Admin, Org Admin, HR Admin, Trainer, Employee, Guest) enforced by RLS.
+- **Assessment** — 10 configurable sections, 4 question types, autosave & resume; generalized
+  N-category weighted scoring → readiness tier (Beginner → AI Ready) + gap analysis.
+- **Dashboards** — employee result (radar, gaps, recommendations, print), HR
+  (donut · radar · bars · heatmap · leaderboard), Super Admin (all-orgs).
+- **AI reports** — provider-agnostic narrative summaries (OpenAI / Claude / Gemini).
+- **Reporting** — export to **PDF · Excel · Word (.docx) · PowerPoint (.pptx)**.
+- **Admin CMS** — self-service CRUD for categories, questions, readiness levels, training
+  modules and recommendation rules.
+- **Hardening** — RLS + server-side authz, rate limiting, security headers, audit logs, 15 tests.
 
 ## Getting started
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in Firebase credentials
+cp .env.example .env.local          # fill Supabase + AI keys
+npm run db:generate                 # prisma client
+npx prisma migrate deploy           # create tables
+# then run supabase/migrations/*.sql (RLS + storage) in the Supabase SQL editor
+npm run db:seed                     # demo org, 10 categories, questions, levels, modules
 npm run dev
 ```
 
-Open http://localhost:3000.
+Open http://localhost:3000. Full setup: [`supabase/README.md`](./supabase/README.md).
 
-### Seed the Firestore catalogue
+## Docs
 
-Questions, the assessment version, training programmes, recommendation rules, departments and
-roles are **stored in Firestore, never hardcoded**. Populate them with:
-
-```bash
-npm run seed
-```
-
-(Requires Firebase Admin credentials in `.env.local` — see `.env.example`.)
+- [`ARCHITECTURE_V2.md`](./ARCHITECTURE_V2.md) — architecture, data model, RLS, auth flow
+- [`DEPLOYMENT.md`](./DEPLOYMENT.md) — turnkey Vercel + Supabase deployment
+- [`supabase/README.md`](./supabase/README.md) — database provisioning
 
 ## Project layout
 
-See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the full architecture, Firestore schema, auth
-flow, navigation and the scoring / persona / recommendation engine designs.
-
 ```
+prisma/            Prisma schema + seed
+supabase/          config + SQL migrations (RLS + storage buckets)
 src/
-├── app/            Next.js routes (landing, auth, employee, hr, admin)
-├── components/     UI primitives (shadcn), layout, charts, shared
-├── domain/         Framework-free business core (enums, types, scoring, persona, recommendation)
-├── lib/            Firebase wiring, repositories, server actions, validation, seed data
-├── config/         Site + navigation config
-└── hooks/          React hooks
+├── app/           routes (landing, auth, dashboard, assessment, result, hr, super, admin, api)
+├── components/    UI (shadcn), layout, charts, admin, ai, export
+├── domain/v2/     framework-free engine (scoring, recommendations) + tests
+├── lib/
+│   ├── supabase/  SSR clients + middleware
+│   ├── db/        Prisma client, queries, analytics, result
+│   ├── auth/      session, roles, guards, tenant
+│   ├── ai/        provider interface + OpenAI/Claude/Gemini adapters
+│   ├── admin/     resource registry + Prisma CRUD
+│   ├── actions/   server actions   · export/  security/  validation/
+└── hooks/  config/
 ```
 
 ## Scripts
 
 | Command | Description |
 |---|---|
-| `npm run dev` | Start dev server |
+| `npm run dev` | Dev server |
 | `npm run build` | Production build |
 | `npm run typecheck` | `tsc --noEmit` |
+| `npm test` | Vitest unit tests |
 | `npm run lint` | ESLint |
-| `npm run seed` | Seed Firestore catalogue |
+| `npm run db:generate` / `db:migrate` / `db:seed` / `db:studio` | Prisma |
 
-## Build phases
+## License
 
-1. **Foundation** ✅ — architecture, domain core, Firebase, design system, landing, seed data.
-2. Landing + auth (login / register / forgot) + session + middleware.
-3. Assessment engine (dynamic questions, autosave, resume).
-4. Result page (radar, persona, learning path, printable report).
-5. HR dashboard (charts + PDF/Excel export).
-6. Admin panel + Claude AI reports + deploy.
+Private / proprietary.
