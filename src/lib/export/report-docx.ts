@@ -47,7 +47,7 @@ export async function exportEmployeeDocx(view: ResultView, orgName: string) {
           new Paragraph({
             children: [
               new TextRun({ text: `${Math.round(view.overallScore)} / 100  `, bold: true, size: 36 }),
-              new TextRun({ text: view.tierLabel, italics: true }),
+              new TextRun({ text: `${view.tierLabel} · ${view.personaLabel}`, italics: true }),
             ],
           }),
           ...(view.tierDescription ? [new Paragraph(view.tierDescription)] : []),

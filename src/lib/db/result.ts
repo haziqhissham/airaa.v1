@@ -2,10 +2,14 @@ import "server-only";
 
 import { prisma } from "@/lib/db/prisma";
 import {
-  matchRecommendations,
+  recommendProgrammes,
   type Recommendation,
   type Rule,
 } from "@/domain/v2/recommendations";
+import { personaForScore } from "@/domain/v2/readiness";
+
+/** Category key for the workplace-application section (Category C). */
+const WORKPLACE_CATEGORY_KEY = "C";
 
 export interface ResultCategory {
   key: string;
@@ -22,6 +26,9 @@ export interface ResultView {
   tierLabel: string;
   tierColor: string;
   tierDescription?: string | null;
+  personaKey: string;
+  personaLabel: string;
+  personaDescription: string;
   categories: ResultCategory[];
   strengths: string[];
   gaps: string[];
@@ -33,7 +40,7 @@ export interface ResultView {
 export async function loadResultView(sessionId: string): Promise<ResultView | null> {
   const score = await prisma.assessmentScore.findUnique({
     where: { sessionId },
-    include: { readinessLevel: true, employee: true },
+    include: { readinessLevel: true, employee: { include: { department: true } } },
   });
   if (!score) return null;
 
@@ -85,7 +92,9 @@ export async function loadResultView(sessionId: string): Promise<ResultView | nu
     stopOnMatch: r.stopOnMatch,
   }));
 
-  const recommendations = matchRecommendations(
+  // Role-aware recommendation: keyed off job grade, function, department and the
+  // workplace-application (Category C) score — not the overall score alone.
+  const { primary, secondary } = recommendProgrammes(
     rules,
     modules.map((m) => ({
       id: m.id,
@@ -101,8 +110,15 @@ export async function loadResultView(sessionId: string): Promise<ResultView | nu
       tier: score.readinessLevel?.tier,
       categoryScores: categoryScoresByKey,
       weakestCategory: weakest?.name,
+      jobGrade: score.employee.jobGrade ?? undefined,
+      jobFunction: score.employee.department?.jobFunction ?? undefined,
+      department: score.employee.department?.name ?? undefined,
+      workplaceScore: categoryScoresByKey[WORKPLACE_CATEGORY_KEY],
     },
   );
+  const recommendations = [primary, secondary].filter(Boolean) as Recommendation[];
+
+  const persona = personaForScore(score.overallScore);
 
   return {
     sessionId,
@@ -111,8 +127,11 @@ export async function loadResultView(sessionId: string): Promise<ResultView | nu
     employeeName: score.employee.name,
     overallScore: score.overallScore,
     tierLabel: score.readinessLevel?.label ?? "Assessed",
-    tierColor: score.readinessLevel?.color ?? "#2563eb",
+    tierColor: score.readinessLevel?.color ?? "#00b6b5",
     tierDescription: score.readinessLevel?.description,
+    personaKey: persona.key,
+    personaLabel: persona.label,
+    personaDescription: persona.description,
     categories: resultCategories,
     strengths: gaps.strengths?.map((s) => s.name) ?? [],
     gaps: gaps.gaps?.map((g) => g.name) ?? [],

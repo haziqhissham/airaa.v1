@@ -86,9 +86,9 @@ export default async function DashboardPage() {
 
         <div className="grid gap-4 sm:grid-cols-3">
           {[
-            { icon: ClipboardList, title: "Assess", text: "Ten sections across leadership, technology, data, ethics and more." },
-            { icon: Sparkles, title: "Discover", text: "Get your readiness level and a category-by-category breakdown." },
-            { icon: ArrowRight, title: "Grow", text: "Follow a training path matched to your gaps." },
+            { icon: ClipboardList, title: "Assess", text: "45 questions across AI knowledge, readiness and workplace scenarios." },
+            { icon: Sparkles, title: "Discover", text: "Get your readiness level, AI persona and a category-by-category breakdown." },
+            { icon: ArrowRight, title: "Grow", text: "Follow a training path matched to your role and gaps." },
           ].map((c) => (
             <GlassCard key={c.title} className="p-5">
               <c.icon className="size-5 text-brand-600" />
@@ -113,7 +113,7 @@ function StartCard({ status, progress }: { status: string; progress: number }) {
         <div className="w-full">
           <h2 className="text-xl font-semibold">AI Readiness Assessment</h2>
           <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-            Ten short sections. No right or wrong answers — this measures organizational readiness.
+            Three categories · 45 questions · about 10–15 minutes. Your answers are confidential.
           </p>
           {resuming ? (
             <div className="mt-3 max-w-xs">
@@ -143,11 +143,11 @@ function CompletedCard({ state }: { state: DashState }) {
   return (
     <GlassCard className="p-8">
       <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center">
-        <ScoreRing score={state.overallScore ?? 0} accent={state.tierColor ?? "#2563eb"} />
+        <ScoreRing score={state.overallScore ?? 0} accent={state.tierColor ?? "#00b6b5"} />
         <div className="flex-1 text-center sm:text-left">
           <div className="flex items-center justify-center gap-2 sm:justify-start">
             <Trophy className="size-4 text-brand-600" />
-            <Badge variant="info" style={{ backgroundColor: `${state.tierColor ?? "#2563eb"}22`, color: state.tierColor }}>
+            <Badge variant="info" style={{ backgroundColor: `${state.tierColor ?? "#00b6b5"}22`, color: state.tierColor }}>
               {state.tierLabel ?? "Assessed"}
             </Badge>
           </div>

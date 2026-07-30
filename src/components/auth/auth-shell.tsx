@@ -16,7 +16,7 @@ export function AuthShell({ orgName, logoUrl, theme, children }: AuthShellProps)
   const panelStyle = {
     background: theme
       ? `linear-gradient(150deg, ${theme.gradientFrom} 0%, ${theme.primary} 55%, ${theme.gradientTo} 100%)`
-      : "linear-gradient(150deg, #1e3a8a 0%, #2563eb 55%, #3b82f6 100%)",
+      : "linear-gradient(150deg, #005352 0%, #008988 55%, #00b6b5 100%)",
   } as React.CSSProperties;
 
   return (
@@ -52,11 +52,11 @@ export function AuthShell({ orgName, logoUrl, theme, children }: AuthShellProps)
           </h2>
           <ul className="mt-8 space-y-4 text-white/85">
             <li className="flex items-center gap-3">
-              <Sparkles className="size-5" /> Six-section, five-dimension
+              <Sparkles className="size-5" /> 45-question, three-category
               assessment
             </li>
             <li className="flex items-center gap-3">
-              <BrainCircuit className="size-5" /> Instant persona + readiness
+              <BrainCircuit className="size-5" /> Instant AI persona + readiness
               score
             </li>
             <li className="flex items-center gap-3">

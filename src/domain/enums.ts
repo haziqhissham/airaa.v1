@@ -61,13 +61,12 @@ export const ScoreMode = {
 } as const;
 export type ScoreMode = (typeof ScoreMode)[keyof typeof ScoreMode];
 
-/** AI Personas by overall-score band. */
+/** AI Personas by overall-score band (1:1 with the four readiness tiers). */
 export const Persona = {
-  UNAWARE: "UNAWARE",
-  CURIOUS: "CURIOUS",
-  EXPLORER: "EXPLORER",
-  PRACTITIONER: "PRACTITIONER",
-  CHAMPION: "CHAMPION",
+  OBSERVER: "OBSERVER", // 0–39   Beginner
+  EXPLORER: "EXPLORER", // 40–59  Emerging
+  PRACTITIONER: "PRACTITIONER", // 60–79  AI Ready
+  CHAMPION: "CHAMPION", // 80–100 AI Advanced
 } as const;
 export type Persona = (typeof Persona)[keyof typeof Persona];
 
@@ -107,12 +106,12 @@ export const HR_ROLES: UserRole[] = [
   UserRole.HR_ADMIN,
 ];
 
-/** Training programme codes. */
+/** The four MDEC training programme codes. */
 export const ProgrammeCode = {
-  OFFICE_MGMT: "OFFICE_MGMT",
-  SALES_CX: "SALES_CX",
-  COPILOT: "COPILOT",
-  DATA_ANALYTICS: "DATA_ANALYTICS",
+  EXEC_LEADERSHIP: "EXEC_LEADERSHIP", // AI Executive Leadership
+  DATA_ANALYTICS: "DATA_ANALYTICS", // AI Data Analytics
+  SALES_CX: "SALES_CX", // AI Driven Sales & Customer Engagement
+  OFFICE_MGMT: "OFFICE_MGMT", // AI for Office Management
 } as const;
 export type ProgrammeCode = (typeof ProgrammeCode)[keyof typeof ProgrammeCode];
 

@@ -42,11 +42,21 @@ const levels: ReadinessTierConfig[] = [
 ];
 
 describe("scoreQuestion", () => {
-  it("normalizes Likert 1→0, 3→50, 5→100", () => {
+  it("scores Likert as n/5 per the spec: 1→20, 3→60, 5→100", () => {
     const q = likert("q");
-    expect(scoreQuestion(q, 1).score).toBe(0);
-    expect(scoreQuestion(q, 3).score).toBe(50);
+    expect(scoreQuestion(q, 1).score).toBe(20);
+    expect(scoreQuestion(q, 3).score).toBe(60);
     expect(scoreQuestion(q, 5).score).toBe(100);
+  });
+
+  it("honours reverse-scored Likert options (value 5 → score 1)", () => {
+    const reversed: Question = {
+      ...likert("q"),
+      options: [1, 2, 3, 4, 5].map((n) => ({ label: String(n), value: String(n), score: 6 - n })),
+    };
+    expect(scoreQuestion(reversed, 5).score).toBe(20); // strongly agree on a reverse item → low readiness
+    expect(scoreQuestion(reversed, 3).score).toBe(60);
+    expect(scoreQuestion(reversed, 1).score).toBe(100);
   });
 
   it("treats open text and blanks as unscored", () => {
@@ -96,9 +106,9 @@ describe("scoreCategory + computeOverall", () => {
     const answers = { l1: 5, l2: 5, d1: 3, e1: 1 };
     expect(scoreCategory(sections[0]!.questions, answers)).toBe(100);
     const cat = computeCategoryScores(sections, answers);
-    expect(cat).toEqual({ lead: 100, data: 50, eth: 0 });
-    // 100*0.5 + 50*0.3 + 0*0.2 = 65
-    expect(computeOverall(cat, sections.map((s) => s.category))).toBe(65);
+    expect(cat).toEqual({ lead: 100, data: 60, eth: 20 });
+    // 100*0.5 + 60*0.3 + 20*0.2 = 72
+    expect(computeOverall(cat, sections.map((s) => s.category))).toBe(72);
   });
 
   it("ignores unscored (open text) questions in the average", () => {

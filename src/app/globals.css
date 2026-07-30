@@ -4,65 +4,67 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    /* Light theme — teal #00B6B5 primary, #262626 for text/graphic */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 0 0% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 0 0% 15%;
 
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 180 100% 36%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 15%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 214 95% 93%;
-    --accent-foreground: 221 83% 33%;
+    --accent: 180 55% 92%;
+    --accent-foreground: 180 100% 22%;
 
     --destructive: 0 72% 51%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 180 100% 36%;
 
     --radius: 0.85rem;
   }
 
   .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
+    /* Dark theme — retain teal #00B6B5, everything else white on #262626 */
+    --background: 0 0% 15%;
+    --foreground: 0 0% 100%;
 
-    --card: 222 40% 9%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 18%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 222 40% 9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 18%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 8%;
+    --primary: 180 100% 36%;
+    --primary-foreground: 0 0% 10%;
 
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 24%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 217 33% 15%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 0 0% 22%;
+    --muted-foreground: 0 0% 72%;
 
-    --accent: 217 33% 20%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 0 0% 24%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 45%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217 33% 20%;
-    --input: 217 33% 22%;
-    --ring: 224 76% 60%;
+    --border: 0 0% 28%;
+    --input: 0 0% 28%;
+    --ring: 180 100% 36%;
   }
 }
 
@@ -87,17 +89,17 @@
     @apply border-white/10 bg-white/5;
   }
 
-  /* Blue brand gradient background */
+  /* Teal brand gradient background */
   .brand-bg {
     background:
       radial-gradient(
         1200px 600px at 10% -10%,
-        rgba(59, 130, 246, 0.25),
+        rgba(0, 182, 181, 0.25),
         transparent 60%
       ),
       radial-gradient(
         1000px 500px at 100% 0%,
-        rgba(29, 78, 216, 0.2),
+        rgba(0, 137, 136, 0.2),
         transparent 55%
       ),
       linear-gradient(180deg, hsl(var(--background)), hsl(var(--background)));
@@ -105,7 +107,7 @@
 
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #1d4ed8, #3b82f6 60%, #60a5fa);
+    background-image: linear-gradient(135deg, #008988, #00b6b5 60%, #33c5c4);
   }
 }
 

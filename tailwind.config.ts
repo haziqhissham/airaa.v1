@@ -49,19 +49,19 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Brand + persona semantic tokens
+        // Brand + persona semantic tokens (teal #00B6B5)
         brand: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfdbfe",
-          300: "#93c5fd",
-          400: "#60a5fa",
-          500: "#3b82f6",
-          600: "#2563eb",
-          700: "#1d4ed8",
-          800: "#1e40af",
-          900: "#1e3a8a",
-          950: "#172554",
+          50: "#e6f8f8",
+          100: "#ccf1f1",
+          200: "#99e2e1",
+          300: "#66d3d2",
+          400: "#33c5c4",
+          500: "#00b6b5",
+          600: "#00a4a3",
+          700: "#008988",
+          800: "#006e6d",
+          900: "#005352",
+          950: "#003130",
         },
       },
       borderRadius: {
@@ -74,7 +74,7 @@ const config: Config = {
       },
       backgroundImage: {
         "brand-gradient":
-          "linear-gradient(135deg, #1e3a8a 0%, #2563eb 45%, #3b82f6 100%)",
+          "linear-gradient(135deg, #005352 0%, #008988 45%, #00b6b5 100%)",
         "glass-gradient":
           "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%)",
       },
