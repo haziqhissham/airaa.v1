@@ -7,7 +7,12 @@
  * Idempotent via deterministic slugs/keys + upsert.
  */
 
+import { config } from "dotenv";
 import { PrismaClient, QuestionType, ModuleLevel } from "@prisma/client";
+
+// Load env for standalone `tsx prisma/seed.ts` runs (prefers .env.local, then .env).
+config({ path: ".env.local" });
+config();
 
 const prisma = new PrismaClient();
 
