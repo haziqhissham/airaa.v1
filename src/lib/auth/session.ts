@@ -6,11 +6,16 @@ import "server-only";
  * `auth.jwt()`), so no DB round-trip is needed to authorize a request.
  */
 
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { UserRole, UserStatus } from "@/domain/enums";
 import type { User } from "@/domain/types";
 
-export async function getSessionUser(): Promise<User | null> {
+/**
+ * Request-scoped: `cache()` dedupes the auth-server round-trip so the many
+ * callers per render (guards + tenant resolution + pages) share one call.
+ */
+export const getSessionUser = cache(async (): Promise<User | null> => {
   try {
     const supabase = await createClient();
     const {
@@ -35,7 +40,7 @@ export async function getSessionUser(): Promise<User | null> {
   } catch {
     return null;
   }
-}
+});
 
 export async function getSessionUid(): Promise<string | null> {
   const user = await getSessionUser();

@@ -8,6 +8,7 @@ import "server-only";
  * reused UI expects.
  */
 
+import { cache } from "react";
 import { prisma } from "@/lib/db/prisma";
 import { getSessionUser } from "@/lib/auth/session";
 import { DEFAULT_ORG_ID } from "@/lib/utils";
@@ -65,25 +66,32 @@ async function safe<T>(fn: () => Promise<T>): Promise<T | null> {
 }
 
 const DEFAULT_SLUG = process.env.NEXT_PUBLIC_DEFAULT_ORG_SLUG ?? "demo";
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
- * Resolve the current organization row. Authenticated requests use the user's
- * org; otherwise the default is found by env id → slug → first org, so a
+ * Resolve the current organization row (request-scoped via `cache()`, so the
+ * many callers per render share one lookup). Authenticated requests use the
+ * user's org; otherwise the default is found by env id → slug → first org, so a
  * single-tenant deployment "just works" regardless of the seeded org's id.
+ * `id` lookups are UUID-guarded to avoid a wasted query + Prisma error when
+ * DEFAULT_ORG_ID is a non-UUID placeholder (e.g. "org-jlg").
  */
-async function resolveOrg(): Promise<PrismaOrg | null> {
+const resolveOrg = cache(async (): Promise<PrismaOrg | null> => {
   const user = await safe(() => getSessionUser());
-  if (user?.organizationId) {
+  if (user?.organizationId && UUID_RE.test(user.organizationId)) {
     const byUser = await safe(() =>
       prisma.organization.findUnique({ where: { id: user.organizationId } }),
     );
     if (byUser) return byUser as PrismaOrg;
   }
 
-  const byId = await safe(() =>
-    prisma.organization.findUnique({ where: { id: DEFAULT_ORG_ID } }),
-  );
-  if (byId) return byId as PrismaOrg;
+  if (UUID_RE.test(DEFAULT_ORG_ID)) {
+    const byId = await safe(() =>
+      prisma.organization.findUnique({ where: { id: DEFAULT_ORG_ID } }),
+    );
+    if (byId) return byId as PrismaOrg;
+  }
 
   const bySlug = await safe(() =>
     prisma.organization.findFirst({ where: { slug: DEFAULT_SLUG } }),
@@ -94,7 +102,7 @@ async function resolveOrg(): Promise<PrismaOrg | null> {
     prisma.organization.findFirst({ orderBy: { createdAt: "asc" } }),
   );
   return (first as PrismaOrg) ?? null;
-}
+});
 
 export async function getActiveOrganizationId(): Promise<string> {
   const org = await resolveOrg();
