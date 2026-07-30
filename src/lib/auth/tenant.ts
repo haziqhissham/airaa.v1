@@ -64,15 +64,44 @@ async function safe<T>(fn: () => Promise<T>): Promise<T | null> {
   }
 }
 
-export async function getActiveOrganizationId(): Promise<string> {
+const DEFAULT_SLUG = process.env.NEXT_PUBLIC_DEFAULT_ORG_SLUG ?? "demo";
+
+/**
+ * Resolve the current organization row. Authenticated requests use the user's
+ * org; otherwise the default is found by env id → slug → first org, so a
+ * single-tenant deployment "just works" regardless of the seeded org's id.
+ */
+async function resolveOrg(): Promise<PrismaOrg | null> {
   const user = await safe(() => getSessionUser());
-  return user?.organizationId || DEFAULT_ORG_ID;
+  if (user?.organizationId) {
+    const byUser = await safe(() =>
+      prisma.organization.findUnique({ where: { id: user.organizationId } }),
+    );
+    if (byUser) return byUser as PrismaOrg;
+  }
+
+  const byId = await safe(() =>
+    prisma.organization.findUnique({ where: { id: DEFAULT_ORG_ID } }),
+  );
+  if (byId) return byId as PrismaOrg;
+
+  const bySlug = await safe(() =>
+    prisma.organization.findFirst({ where: { slug: DEFAULT_SLUG } }),
+  );
+  if (bySlug) return bySlug as PrismaOrg;
+
+  const first = await safe(() =>
+    prisma.organization.findFirst({ orderBy: { createdAt: "asc" } }),
+  );
+  return (first as PrismaOrg) ?? null;
+}
+
+export async function getActiveOrganizationId(): Promise<string> {
+  const org = await resolveOrg();
+  return org?.id ?? DEFAULT_ORG_ID;
 }
 
 export async function getActiveOrganization(): Promise<Organization> {
-  const orgId = await getActiveOrganizationId();
-  const org = await safe(() =>
-    prisma.organization.findUnique({ where: { id: orgId } }),
-  );
-  return org ? toDomain(org as PrismaOrg) : FALLBACK_ORG;
+  const org = await resolveOrg();
+  return org ? toDomain(org) : FALLBACK_ORG;
 }
