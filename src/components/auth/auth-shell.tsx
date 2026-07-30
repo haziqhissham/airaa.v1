@@ -41,7 +41,7 @@ export function AuthShell({ orgName, logoUrl, theme, children }: AuthShellProps)
             </div>
           )}
           <div className="leading-tight">
-            <p className="font-semibold">MDEC AI Readiness</p>
+            <p className="font-semibold">AI Readiness</p>
             <p className="text-sm text-white/70">{orgName}</p>
           </div>
         </Link>
@@ -67,7 +67,7 @@ export function AuthShell({ orgName, logoUrl, theme, children }: AuthShellProps)
         </div>
 
         <p className="relative text-xs text-white/60">
-          © {new Date().getFullYear()} {siteConfig.owner} · {siteConfig.name}
+          © {new Date().getFullYear()} {orgName} · {siteConfig.name}
         </p>
       </div>
 
@@ -78,7 +78,7 @@ export function AuthShell({ orgName, logoUrl, theme, children }: AuthShellProps)
             href="/"
             className="flex items-center gap-2 text-sm font-medium lg:invisible"
           >
-            <BrainCircuit className="size-5 text-brand-600" /> MDEC AI Readiness
+            <BrainCircuit className="size-5 text-brand-600" /> AI Readiness
           </Link>
           <ThemeToggle />
         </div>

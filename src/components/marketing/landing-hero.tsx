@@ -38,17 +38,17 @@ const steps = [
   {
     icon: Compass,
     title: "Assess",
-    text: "Answer six short sections about your AI awareness, exposure, confidence, adoption and mindset.",
+    text: "Answer ten short sections spanning leadership, technology, people, data, security, ethics and more.",
   },
   {
     icon: LineChart,
     title: "Discover",
-    text: "Get an instant readiness score, a persona and a clear breakdown across all five dimensions.",
+    text: "Get an instant readiness score, your readiness level and a clear breakdown across every category.",
   },
   {
     icon: Sparkles,
     title: "Grow",
-    text: "Receive a personalised MDEC AI training path matched to your role and readiness.",
+    text: "Receive a personalised training path matched to your role and where you can improve most.",
   },
 ];
 
@@ -84,7 +84,7 @@ export function LandingHero({ orgName, logoUrl, theme }: LandingHeroProps) {
             </div>
           )}
           <div className="leading-tight">
-            <p className="text-sm font-semibold">MDEC AI Readiness</p>
+            <p className="text-sm font-semibold">AI Readiness</p>
             <p className="text-xs text-muted-foreground">{orgName}</p>
           </div>
         </div>
@@ -102,7 +102,7 @@ export function LandingHero({ orgName, logoUrl, theme }: LandingHeroProps) {
           <div>
             <motion.div initial="hidden" animate="show" variants={fadeUp} custom={0}>
               <Badge variant="info" className="mb-5 gap-1.5">
-                <Sparkles className="size-3.5" /> MDEC AI Talent Initiative
+                <Sparkles className="size-3.5" /> Enterprise AI Readiness
               </Badge>
             </motion.div>
 
@@ -125,7 +125,7 @@ export function LandingHero({ orgName, logoUrl, theme }: LandingHeroProps) {
               className="mt-5 max-w-xl text-lg text-muted-foreground"
             >
               A guided assessment for {orgName} employees. Understand
-              where you stand with AI today and get a personalised MDEC training
+              where you stand with AI today and get a personalised training
               path to grow — no right or wrong answers, just insight.
             </motion.p>
 
@@ -206,7 +206,7 @@ export function LandingHero({ orgName, logoUrl, theme }: LandingHeroProps) {
             <div className="text-sm text-muted-foreground">
               <p className="font-medium text-foreground">Privacy notice</p>
               <p className="mt-1">
-                Your responses are collected by {siteConfig.owner} on behalf of{" "}
+                Your responses are collected on behalf of{" "}
                 {orgName} solely to assess AI readiness and recommend
                 suitable training. Individual results are visible only to you and
                 authorised HR personnel. Data is stored securely and is never
@@ -219,7 +219,7 @@ export function LandingHero({ orgName, logoUrl, theme }: LandingHeroProps) {
       </section>
 
       <footer className="relative z-10 border-t border-border/60 py-6 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} {siteConfig.owner} · {siteConfig.name}
+        © {new Date().getFullYear()} {orgName} · {siteConfig.name}
       </footer>
     </main>
   );

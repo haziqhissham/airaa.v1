@@ -25,7 +25,7 @@ export function AppChrome({ orgName, displayName, role, children }: AppChromePro
               <BrainCircuit className="size-5" />
             </div>
             <div className="leading-tight">
-              <p className="text-sm font-semibold">MDEC AI Readiness</p>
+              <p className="text-sm font-semibold">AI Readiness</p>
               <p className="text-xs text-muted-foreground">{orgName}</p>
             </div>
           </Link>
