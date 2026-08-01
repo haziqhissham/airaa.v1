@@ -6,6 +6,8 @@ export const siteConfig = {
     "Measure your AI readiness and discover the training that fits you best.",
   durationMinutes: 15,
   owner: "AI Readiness",
+  /** Demo build: enables sample-only tools like "Reset my assessment". Never set in production. */
+  demoMode: process.env.NEXT_PUBLIC_DEMO_MODE === "true",
 } as const;
 
 export type SiteConfig = typeof siteConfig;

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScoreRing } from "@/components/result/score-ring";
+import { ResetAssessmentButton } from "@/components/assessment/reset-assessment-button";
 import { requireProfile } from "@/lib/auth/guards";
 import { getActiveOrganization, getActiveOrganizationId } from "@/lib/auth/tenant";
 import { prisma } from "@/lib/db/prisma";
@@ -82,6 +83,12 @@ export default async function DashboardPage() {
           <CompletedCard state={state} />
         ) : (
           <StartCard status={state.status} progress={state.progress} />
+        )}
+
+        {siteConfig.demoMode && (state.status === "completed" || state.status === "in_progress") && (
+          <div className="flex justify-end">
+            <ResetAssessmentButton />
+          </div>
         )}
 
         <div className="grid gap-4 sm:grid-cols-3">

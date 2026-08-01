@@ -29,6 +29,37 @@ async function currentEmployee() {
   return { employee };
 }
 
+/**
+ * Demo-only: wipe the current employee's assessment history (sessions cascade to
+ * their answers + scores; reports + certificates too) so the account can retake
+ * from scratch. Guarded server-side by NEXT_PUBLIC_DEMO_MODE — never runs in prod.
+ */
+export async function resetMyAssessment(): Promise<{ ok: boolean; error?: string }> {
+  if (process.env.NEXT_PUBLIC_DEMO_MODE !== "true") {
+    return { ok: false, error: "Reset is only available in the demo build." };
+  }
+  const ctx = await currentEmployee();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+  const { employee } = ctx;
+
+  await prisma.$transaction([
+    prisma.report.deleteMany({ where: { employeeId: employee.id } }),
+    prisma.certificate.deleteMany({ where: { employeeId: employee.id } }),
+    prisma.assessmentSession.deleteMany({ where: { employeeId: employee.id } }),
+  ]);
+  await prisma.auditLog.create({
+    data: {
+      organizationId: employee.organizationId,
+      actorId: employee.userId,
+      action: "ASSESSMENT_RESET",
+      targetType: "employee",
+      targetId: employee.id,
+      metadata: { demoReset: true },
+    },
+  });
+  return { ok: true };
+}
+
 export interface StartResult {
   ok: boolean;
   error?: string;
