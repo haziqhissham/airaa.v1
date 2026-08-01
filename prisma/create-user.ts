@@ -79,7 +79,7 @@ async function main() {
     process.exit(1);
   }
   const role = Role[roleInput as keyof typeof Role];
-  const name = arg("name") ?? email.split("@")[0];
+  const name = arg("name") ?? email.split("@")[0] ?? email;
   const position = arg("position") ?? (ADMIN_ROLES.has(role) ? "Administrator" : "Staff");
 
   const org =
