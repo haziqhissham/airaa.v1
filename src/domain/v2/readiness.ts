@@ -86,9 +86,13 @@ const clampScore = (n: number) => Math.min(100, Math.max(0, n));
 /** Resolve the readiness band for an overall score (0..100). */
 export function bandForScore(score: number): ReadinessBand {
   const s = clampScore(score);
+  // Bands use integer bounds (…39 | 40…) but scores are fractional, so a value
+  // like 39.3 matches no band. Fall back to the highest band whose min ≤ score
+  // (BANDS are ascending) rather than defaulting to the top band.
   return (
     READINESS_BANDS.find((b) => s >= b.min && s <= b.max) ??
-    READINESS_BANDS[READINESS_BANDS.length - 1]!
+    [...READINESS_BANDS].reverse().find((b) => s >= b.min) ??
+    READINESS_BANDS[0]!
   );
 }
 

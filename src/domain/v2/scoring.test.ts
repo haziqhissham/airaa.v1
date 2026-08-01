@@ -124,6 +124,15 @@ describe("classifyReadiness", () => {
     expect(classifyReadiness(levels, 100)?.tier).toBe("AI_READY");
     expect(classifyReadiness(levels, 41)?.tier).toBe("DEVELOPING");
   });
+
+  it("classifies fractional scores in the gap between integer bounds to the lower tier", () => {
+    // 20.5 sits between BEGINNER max (20) and EMERGING min (21) — it must map to
+    // the highest band whose min ≤ score, not default to the top tier.
+    expect(classifyReadiness(levels, 20.5)?.tier).toBe("BEGINNER");
+    expect(classifyReadiness(levels, 40.5)?.tier).toBe("EMERGING");
+    expect(classifyReadiness(levels, 60.5)?.tier).toBe("DEVELOPING");
+    expect(classifyReadiness(levels, 80.5)?.tier).toBe("ADVANCED");
+  });
 });
 
 describe("analyzeGaps", () => {

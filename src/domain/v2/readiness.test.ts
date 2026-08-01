@@ -31,6 +31,17 @@ describe("readiness bands", () => {
     expect(personaForScore(100).label).toBe("AI Champion");
   });
 
+  it("classifies fractional scores that fall in the gap between integer bounds", () => {
+    // Scores are round1 (one decimal), so a value like 39.3 sits between the
+    // Beginner max (39) and Emerging min (40) — it must not default to the top.
+    expect(bandForScore(39.3).tier).toBe("BEGINNER");
+    expect(bandForScore(39.9).tier).toBe("BEGINNER");
+    expect(bandForScore(59.5).tier).toBe("EMERGING");
+    expect(bandForScore(79.4).tier).toBe("AI_READY");
+    expect(bandForScore(79.9).tier).toBe("AI_READY");
+    expect(bandForScore(80.1).tier).toBe("AI_ADVANCED");
+  });
+
   it("clamps out-of-range scores", () => {
     expect(personaForScore(-10).label).toBe("AI Observer");
     expect(personaForScore(150).label).toBe("AI Champion");

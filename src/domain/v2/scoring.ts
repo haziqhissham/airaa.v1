@@ -114,7 +114,15 @@ export function classifyReadiness(
 ): ReadinessTierConfig | null {
   const s = clamp(score);
   const ordered = [...levels].sort((a, b) => a.minScore - b.minScore);
-  return ordered.find((l) => s >= l.minScore && s <= l.maxScore) ?? ordered.at(-1) ?? null;
+  // Prefer an exact band, but tiers use integer bounds (…39 | 40…) while scores
+  // are fractional (round1), so a value like 39.3 falls in the gap. Fall back to
+  // the highest band whose min ≤ score — never blindly to the top tier.
+  return (
+    ordered.find((l) => s >= l.minScore && s <= l.maxScore) ??
+    [...ordered].reverse().find((l) => s >= l.minScore) ??
+    ordered[0] ??
+    null
+  );
 }
 
 export interface GapAnalysis {

@@ -18,6 +18,7 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:users": "tsx prisma/seed-demo-users.ts",
+    "db:seed:demo": "tsx scripts/demo-seed-analytics.ts",
     "db:studio": "prisma studio"
   },
   "prisma": {
