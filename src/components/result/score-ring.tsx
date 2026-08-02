@@ -14,7 +14,7 @@ export function ScoreRing({
   size = 160,
   stroke = 12,
   className,
-  accent = "#2563eb",
+  accent = "#00b6b5",
 }: ScoreRingProps) {
   const clamped = Math.max(0, Math.min(100, score));
   const r = (size - stroke) / 2;

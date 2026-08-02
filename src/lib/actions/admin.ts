@@ -82,19 +82,33 @@ const orgSchema = z.object({
   slug: z.string().min(1),
   status: z.string().min(1),
   logoUrl: z.string().optional().default(""),
-  themePrimary: z.string().min(1),
-  themeGradFrom: z.string().min(1),
-  themeGradTo: z.string().min(1),
+  // Branding theme is optional here: it is only ever persisted for super
+  // admins (see below), so non-super-admin saves omit these fields entirely.
+  themePrimary: z.string().min(1).optional(),
+  themeGradFrom: z.string().min(1).optional(),
+  themeGradTo: z.string().min(1).optional(),
 });
 
 export async function saveOrganization(
   values: Record<string, unknown>,
 ): Promise<AdminActionResult> {
-  const { organizationId } = await ctx();
+  const { user, organizationId } = await ctx();
   const parsed = orgSchema.safeParse(values);
   if (!parsed.success)
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid data." };
   const v = parsed.data;
+
+  // Only SUPER_ADMIN may change the white-label branding theme. Any theme
+  // fields sent by a lower role are ignored so the columns can't drift.
+  const canEditBranding = user.role === UserRole.SUPER_ADMIN;
+  const brandingData =
+    canEditBranding && v.themePrimary && v.themeGradFrom && v.themeGradTo
+      ? {
+          themePrimary: v.themePrimary,
+          themeGradFrom: v.themeGradFrom,
+          themeGradTo: v.themeGradTo,
+        }
+      : {};
 
   try {
     await prisma.organization.update({
@@ -104,10 +118,11 @@ export async function saveOrganization(
         slug: v.slug,
         status: v.status as OrgStatus,
         logoUrl: v.logoUrl || null,
-        themePrimary: v.themePrimary,
-        themeGradFrom: v.themeGradFrom,
-        themeGradTo: v.themeGradTo,
+        ...brandingData,
       },
+    });
+    await audit(organizationId, user.uid, "CONTENT_UPDATED", "organization", organizationId, {
+      brandingChanged: Object.keys(brandingData).length > 0,
     });
     return { ok: true };
   } catch (err) {

@@ -2,7 +2,7 @@
 
 import type { HeatRow } from "@/lib/db/analytics";
 
-/** Department × category readiness heat map (0..100 → blue intensity). */
+/** Department × category readiness heat map (0..100 → teal intensity). */
 export function Heatmap({
   rows,
   categories,
@@ -12,7 +12,7 @@ export function Heatmap({
 }) {
   const cell = (score: number) => {
     const a = 0.12 + (Math.max(0, Math.min(100, score)) / 100) * 0.85;
-    return `rgba(37, 99, 235, ${a.toFixed(2)})`;
+    return `rgba(0, 182, 181, ${a.toFixed(2)})`;
   };
   const textColor = (score: number) => (score >= 55 ? "#fff" : "hsl(var(--foreground))");
 

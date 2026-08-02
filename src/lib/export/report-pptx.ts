@@ -8,8 +8,8 @@
 import type { ResultView } from "@/lib/db/result";
 import type { OrgAnalytics } from "@/lib/db/analytics";
 
-const BRAND = "2563EB";
-const DARK = "1E3A8A";
+const BRAND = "00B6B5";
+const DARK = "005352";
 const safe = (s: string) => s.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
 
 export async function exportEmployeePptx(view: ResultView, orgName: string) {

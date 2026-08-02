@@ -31,7 +31,7 @@ export function HorizontalBar({
   domainMax,
   valueSuffix = "",
   lowestHighlight = 0,
-  color = "#2563eb",
+  color = "#00b6b5",
 }: HorizontalBarProps) {
   const height = Math.max(120, data.length * 44);
   // Lowest N by value get a warning tone.

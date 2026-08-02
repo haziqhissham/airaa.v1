@@ -74,9 +74,9 @@ model Organization {
   slug             String    @unique
   status           OrgStatus @default(ACTIVE)
   logoUrl          String?   @map("logo_url")
-  themePrimary     String    @default("#2563eb") @map("theme_primary")
-  themeGradFrom    String    @default("#1e3a8a") @map("theme_grad_from")
-  themeGradTo      String    @default("#3b82f6") @map("theme_grad_to")
+  themePrimary     String    @default("#00b6b5") @map("theme_primary")
+  themeGradFrom    String    @default("#005352") @map("theme_grad_from")
+  themeGradTo      String    @default("#00b6b5") @map("theme_grad_to")
   defaultVersionId String?   @map("default_version_id")
   contactEmail     String?   @map("contact_email")
   createdAt        DateTime  @default(now()) @map("created_at")

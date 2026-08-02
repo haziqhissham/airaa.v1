@@ -131,7 +131,7 @@ function FieldControl({
         <div className="flex items-center gap-2">
           <input
             type="color"
-            value={(value as string) || "#2563eb"}
+            value={(value as string) || "#00b6b5"}
             onChange={(e) => onChange(e.target.value)}
             className="h-11 w-14 cursor-pointer rounded-lg border border-input bg-background"
           />

@@ -486,10 +486,17 @@ const DEPARTMENTS = [
 async function main() {
   console.log("🌱 Seeding AIRA pilot tenant (MDEC × JLAND)…\n");
 
+  // Brand theme (teal #00B6B5). Set explicitly so re-seeding realigns any
+  // organisation still carrying the legacy blue palette.
+  const theme = {
+    themePrimary: "#00b6b5",
+    themeGradFrom: "#005352",
+    themeGradTo: "#00b6b5",
+  };
   const org = await prisma.organization.upsert({
     where: { slug: ORG_SLUG },
-    update: { name: ORG_NAME },
-    create: { name: ORG_NAME, slug: ORG_SLUG, status: "ACTIVE" },
+    update: { name: ORG_NAME, ...theme },
+    create: { name: ORG_NAME, slug: ORG_SLUG, status: "ACTIVE", ...theme },
   });
   const orgId = org.id;
   console.log(`  ✓ organization: ${org.name}`);

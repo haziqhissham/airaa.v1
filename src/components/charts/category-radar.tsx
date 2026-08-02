@@ -34,8 +34,8 @@ export function CategoryRadar({
           />
           <Radar
             dataKey="score"
-            stroke="#2563eb"
-            fill="#3b82f6"
+            stroke="#00b6b5"
+            fill="#00b6b5"
             fillOpacity={0.45}
             strokeWidth={2}
             isAnimationActive={false}

@@ -9,7 +9,7 @@ import { saveOrganization } from "@/lib/actions/admin";
 import type { FieldDef } from "@/lib/admin/field-types";
 import type { Organization } from "@/domain/types";
 
-const fields: FieldDef[] = [
+const profileFields: FieldDef[] = [
   { name: "name", label: "Organization name", type: "text", colSpan: 2 },
   { name: "slug", label: "Slug", type: "text" },
   {
@@ -19,23 +19,40 @@ const fields: FieldDef[] = [
     options: ["ACTIVE", "TRIAL", "SUSPENDED"].map((v) => ({ value: v, label: v })),
   },
   { name: "logoUrl", label: "Logo URL", type: "text", colSpan: 2 },
+];
+
+const brandingFields: FieldDef[] = [
   { name: "themePrimary", label: "Primary colour", type: "color" },
   { name: "themeGradFrom", label: "Gradient from", type: "color" },
   { name: "themeGradTo", label: "Gradient to", type: "color" },
 ];
 
-export function OrgEditor({ org }: { org: Organization }) {
+export function OrgEditor({
+  org,
+  canEditBranding,
+}: {
+  org: Organization;
+  canEditBranding: boolean;
+}) {
   const router = useRouter();
   const [submitting, setSubmitting] = React.useState(false);
+
+  const fields = canEditBranding
+    ? [...profileFields, ...brandingFields]
+    : profileFields;
 
   const initial = {
     name: org.name,
     slug: org.code,
     status: org.status,
     logoUrl: org.logoUrl ?? "",
-    themePrimary: org.theme.primary,
-    themeGradFrom: org.theme.gradientFrom,
-    themeGradTo: org.theme.gradientTo,
+    ...(canEditBranding
+      ? {
+          themePrimary: org.theme.primary,
+          themeGradFrom: org.theme.gradientFrom,
+          themeGradTo: org.theme.gradientTo,
+        }
+      : {}),
   };
 
   const onSubmit = async (values: Record<string, unknown>) => {
@@ -70,6 +87,21 @@ export function OrgEditor({ org }: { org: Organization }) {
           submitLabel="Save organization"
         />
       </GlassCard>
+
+      {!canEditBranding && (
+        <GlassCard className="flex items-center gap-3 p-4">
+          <span
+            className="size-6 shrink-0 rounded-md border"
+            style={{
+              background: `linear-gradient(135deg, ${org.theme.gradientFrom}, ${org.theme.primary} 60%, ${org.theme.gradientTo})`,
+            }}
+            aria-hidden
+          />
+          <p className="text-xs text-muted-foreground">
+            Branding colours are managed by a super admin and can’t be changed here.
+          </p>
+        </GlassCard>
+      )}
     </div>
   );
 }
