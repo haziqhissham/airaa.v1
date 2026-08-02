@@ -35,12 +35,20 @@ async function currentEmployee() {
  * from scratch. Guarded server-side by NEXT_PUBLIC_DEMO_MODE — never runs in prod.
  */
 export async function resetMyAssessment(): Promise<{ ok: boolean; error?: string }> {
-  if (process.env.NEXT_PUBLIC_DEMO_MODE !== "true") {
-    return { ok: false, error: "Reset is only available in the demo build." };
-  }
   const ctx = await currentEmployee();
   if ("error" in ctx) return { ok: false, error: ctx.error };
   const { employee } = ctx;
+
+  // Allowed on the demo tenant (slug "demo") or any build with demo mode on.
+  const org = await prisma.organization.findUnique({
+    where: { id: employee.organizationId },
+    select: { slug: true },
+  });
+  const demoAllowed =
+    process.env.NEXT_PUBLIC_DEMO_MODE === "true" || org?.slug === "demo";
+  if (!demoAllowed) {
+    return { ok: false, error: "Reset is only available in the demo version." };
+  }
 
   await prisma.$transaction([
     prisma.report.deleteMany({ where: { employeeId: employee.id } }),

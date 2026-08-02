@@ -85,11 +85,12 @@ export default async function DashboardPage() {
           <StartCard status={state.status} progress={state.progress} />
         )}
 
-        {siteConfig.demoMode && (state.status === "completed" || state.status === "in_progress") && (
-          <div className="flex justify-end">
-            <ResetAssessmentButton />
-          </div>
-        )}
+        {(siteConfig.demoMode || org.code === "demo") &&
+          (state.status === "completed" || state.status === "in_progress") && (
+            <div className="flex justify-end">
+              <ResetAssessmentButton />
+            </div>
+          )}
 
         <div className="grid gap-4 sm:grid-cols-3">
           {[
