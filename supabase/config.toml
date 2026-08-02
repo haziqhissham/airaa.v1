@@ -19,10 +19,17 @@ major_version = 15
 enabled = true
 port = 54323
 
+# NOTE: These settings apply ONLY to the local Supabase CLI (`supabase start`).
+# The HOSTED project's redirect behaviour is controlled in the Supabase
+# Dashboard → Authentication → URL Configuration (Site URL + Redirect URLs).
+# Keep the two in sync — update the dashboard for production/preview domains.
 [auth]
 enabled = true
 site_url = "http://localhost:3000"
-additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+additional_redirect_urls = [
+  "http://localhost:3000/**",
+  "https://airaa-v1.vercel.app/**",
+]
 jwt_expiry = 3600
 enable_signup = true
 
