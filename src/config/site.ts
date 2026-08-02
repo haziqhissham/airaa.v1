@@ -6,8 +6,8 @@ export const siteConfig = {
     "Measure your AI readiness and discover the training that fits you best.",
   durationMinutes: 15,
   owner: "AI Readiness",
-  /** Demo build: enables sample-only tools like "Reset my assessment". Set NEXT_PUBLIC_DEMO_MODE
-   *  on demo environments only. Tolerant of casing/whitespace (e.g. "True", " true "). */
+  /** Demo build: enables sample-only tools like "Reset my assessment". Set NEXT_PUBLIC_DEMO_MODE=true
+   *  on demo environments only (build-time inlined). Tolerant of casing/whitespace (e.g. "True", " true "). */
   demoMode: (process.env.NEXT_PUBLIC_DEMO_MODE ?? "").trim().toLowerCase() === "true",
 } as const;
 
